@@ -1,0 +1,24 @@
+1. django_admin startproject BugMinder
+
+2. python manage.py startapp tickets
+
+3. pip install virtualenv
+
+4. virtualenv myprojectenv
+
+5. pip install django
+
+4. open the project in VS Code and use its built-in terminal to cd to the script folder in your virtualenv.
+
+5. As an Administrator, you can set the execution policy by typing this into your PowerShell window:
+
+Set-ExecutionPolicy RemoteSigned
+
+6. \BugMinder\myprojectenv\scripts> .\activate
+(myprojectenv)\BugMinder\myprojectenv\scripts>
+
+7. When you are done, you can set the policy back to its default value with:
+
+Set-ExecutionPolicy Restricted
+
+9. deactivate to turn off the virtualenv.

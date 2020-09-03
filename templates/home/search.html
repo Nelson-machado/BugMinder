@@ -1,0 +1,27 @@
+{% extends 'ticketBase.html' %}
+
+{% block title %} search - results {% endblock title %}
+{% block ticketBody %}
+<div class="container-fluid">
+    {% if allTickets|length < 1 %}
+    <p>No search results </p>
+    <h4>We did not find results for:<b>{{query}}</b></h4> 
+    <ul><li>Check spelling or type a new query.</li></ul>
+    {% else %}
+    <h4>About <b>{{allTickets|length}}</b> result(s), for your search: <b>{{query}}</b></h4>
+    {% for ticket in allTickets %}
+    <div class="card m-1">
+        <div class="card-header"> <strong> Ticket Number: {{ticket.tno}} | Status: <i> {{ticket.status}} </i>
+            </strong> </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ticket.title}} </h5>
+            <a href="/tickets/{{ticket.tno}}" role="button" class="btn btn-primary">View details</a>
+        </div>
+        <div class="card-footer text-muted">
+            Created on: {{ticket.timestamp}}
+        </div>
+    </div><br>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock ticketBody %}

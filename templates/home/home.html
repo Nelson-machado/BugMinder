@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+{% block homeactive %} active {% endblock homeactive %}
+{% block body %}
+<center>
+    <div class="container my-3 " style="color: #285480;">
+        <div class="jumbotron" style="background-color: #cde6ff;">
+            <h1 class="display-4">Welcome to the M<sup>3</sup> BUG-MINDER</h1>
+            <p class="lead">This is a sample website i am building to track my progress on django-python learning.</p>
+            <hr class="my-4">
+            <p>signup and login to use this tracker for a trail period of ten days</p>
+            {% if user.is_authenticated %}
+            <div>
+                {% load static %}<img src="{% static 'img/cat.gif' %}" height="50" width="40" alt="billy" />
+                <a class="btn btn-primary btn-lg buttonHome" href="/tickets" role="button"> Use Bug-Minder</a>
+            </div>
+            <script>
+                document.getElementById("Nav_Base").style.display = "none"; 
+            </script>
+            {% else %}
+            <h4>Login to use Bug-Minder</h4>
+            {% endif %}
+        </div>
+    </div>
+</center>
+
+<div class="container" style="color: #1d4165;">
+    <div class="card-deck">
+        <div class="card">
+            <h1 class="display-5">FREE {% load static %}<img src="{% static 'img/dancer.gif' %}" height="70" width="60" alt="dance"></h1>
+            <div class="card-body">
+                <h5 class="card-title">Developer edition</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+                    content. This content is a little bit longer.</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 1 mins ago</small>
+            </div>
+        </div>
+        <div class="card">
+            <h1 class="display-5"> &#x20b9;599 / Month</h1>
+            <div class="card-body">
+                <h5 class="card-title">Enterprise edition</h5>
+                <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 1 mins ago</small>
+            </div>
+        </div>
+        <div class="card">
+            <h1 class="display-5"> &#x20b9;12,000 / Year</h1>
+            <div class="card-body">
+                <h5 class="card-title">Company edition</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+                    content. This card has even longer content than the first to show that equal height action.</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 1 mins ago</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock body %}

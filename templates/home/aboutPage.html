@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %} about {% endblock title %}
+{% block aboutactive %} active {% endblock aboutactive %}
+{% block body %}
+<h1> Special Thanks from the of M<sup>3</sup>-Bug-Minder Team!</h1>
+
+<div class="jumbotron">
+  <div class="row text-center hoverable p-4">
+    <div class="col-md-4 offset-md-1 mx-3 my-3">
+      <div class="view overlay">
+        {% load static %}
+        <img src="{% static "img/giphy.gif" %}" class="img-fluid" width="150" height="300" title="About Us">
+        <a>
+          <div class="mask rgba-white-slight"></div>
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-7 text-md-left ml-3 mt-3">
+      <a href="#" class="green-text">
+        <h6 class="h6 pb-1"><i class="fas fa-desktop pr-1"></i> This Page is dedicated to my all time motivator and my
+          friend, My Mom.</h6>
+      </a>
+      <p class="font-weight-normal">Penned down by <a><strong>Machado</strong></a>, 15/08/2020</p>
+    </div>
+  </div>
+</div>
+{% endblock body %}

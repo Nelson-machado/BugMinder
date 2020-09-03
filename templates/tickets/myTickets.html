@@ -1,0 +1,100 @@
+{% extends 'ticketBase.html' %}
+{% block title %}
+
+{{ request.user.username }}'s Tickets{% endblock title %}
+{% block myticketsActive %} active {% endblock myticketsActive %}
+{% block ticketBody %}
+<script>
+    document.getElementById("mytickets").style = "color: #d5e3f3;"
+</script>
+<form method="get" class="my-2 my-lg-0">
+    {% csrf_token %}
+    <div class="container-fluid scroll my-1">
+        <div class="form-row">
+            <div class="form-group col-md-8">
+                <h1 id="my-tickets-h1"> List of {{ request.user.username|title }}'s {{ item.status}} tickets: </h1>
+            </div>
+            <div class="form-group col-md-4">
+                <select class="form-control" style="color: #80b9f2; background-color: #312e2e;" name="status_dropdown"
+                    id="status_dropdown" onchange="this.form.submit()">
+                    <option value="">All tickets</a></option>
+                    {% for item in distinctStatus %}
+                    <option value="{{item.status}}" {% if item.status == selectedStatus %}selected{% endif %}>
+                        {{ item.status|upper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row m-1 container-fluid" style="height: 630px !important;">
+            <div class="col-sm-2 col-md-6 col-lg-6">
+                {% if allTickets|length < 1 %}
+                <h4>No tickets as of now.</b></h4>
+                {% else %}
+                <div id="div1" style="height: 620px;position:relative;">
+                    <div id="div2" style="max-height:100%;overflow:auto; border:1px solid #b6a6a6;">
+                        <div id="div3" style="height:1500px;border:5px solid rgb(255 255 185);">
+                            {% for ticket in allTickets %}
+                            <div class="card">
+                                <div class="card-header"> <strong> Ticket Number:</strong> {{ticket.tno}} |
+                                    <strong> Status: </strong> <i> {{ticket.status}} </i> |
+                                    <strong> Created on: </strong> {{ticket.timestamp}}<br>
+                                    <strong> End Date: </strong>
+                                    {% if ticket.end_date %}
+                                    {{ticket.end_date|date:'Y-m-d'}}
+                                    {% else %}
+                                    <i style="color:red">Date to be defined.</i>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Title: {{ticket.title}} </h5>
+                                    <a href="/tickets/{{ticket.tno}}" role="button" class="btn btn-primary">View
+                                        details</a>
+                                </div>
+                            </div><br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-sm-9 col-md-6 col-lg-6">
+
+                <div class="card">
+                    <div class="card-header"> <strong>
+                            <h4>Tickets Summery</h4>
+                        </strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <h5 class="card-title" style="color: #163960;">
+                                    <strong>Total:&nbsp;{{ allTicketCount }}</strong></h5>
+                                <h5 class="card-title" style="color: #4881c1;">
+                                    <strong>Assigned:&nbsp;{{ assignedTicketCount }}</strong></h5>
+                                <h5 class="card-title" style="color: #049349;"><strong>In
+                                        Progress:&nbsp;{{ inProgressTicketCount }}</strong></h5>
+                                <h5 class="card-title" style="color: #d3d316;"><strong>On
+                                        Hold:{{ onHoldTicketCount }}</strong></h5>
+                                <h5 class="card-title" style="color: #4f5358;">
+                                    <strong>Resolved:&nbsp;{{ resolvedTicketCount }}</strong></h5>
+                            </div>
+                            <div class="form-group col-md-4">
+                                {% load static %}<img src="{% static 'img/giphy2.gif' %}" height="200" width="180"
+                                    alt="billy" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</form>
+<script>
+    var selectedValue = document.getElementById("status_dropdown").value;
+    if (selectedValue === "") {
+        document.getElementById("my-tickets-h1").innerText = "All Tickets";
+    }
+    else {
+        document.getElementById("my-tickets-h1").innerText = selectedValue + " .";
+    }
+    //alert(selectedValue);
+</script>
+{% endblock ticketBody %}

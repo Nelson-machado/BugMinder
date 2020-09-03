@@ -1,0 +1,39 @@
+{% extends 'ticketBase.html' %}
+
+{% block title %} Tickets- home {% endblock title %}
+{% block ticketHomeActive %} active {% endblock ticketHomeActive %}
+{% block ticketBody %}
+<script>
+    document.getElementById("ticketsHome").style = "color: #d5e3f3;"
+</script>
+
+<div class="container-fluid scroll">
+    <div class="scroll" style="background-color: #dadada;">
+        <h1> List of recent tickets </h1>
+        <div id="div1" style="height: 660px;position:relative;">
+            <div id="div2" style="max-height:100%;overflow:auto; border:1px solid #b6a6a6;">
+                <div id="div3" style="height:1500px;border:5px solid rgb(255 255 185);">
+                    {% for ticket in allTickets %}
+                    <div class="card">
+                        <div class="card-header"> <strong> Ticket Number:</strong> {{ticket.tno}} |
+                            <strong>Status: </strong><i> {{ticket.status}} </i> |
+                            <strong>Worked by:</strong> {{ticket.author|title}}
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Title: {{ticket.title}} </h5>
+                            {% comment %} <a href="/tickets/{{ticket.slug}}" role="button" class="btn btn-primary">View
+                                details</a>
+                            {% endcomment %}
+                            <a href="/tickets/{{ticket.tno}}" role="button" class="btn btn-primary">View details</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Created on: {{ticket.timestamp}}
+                        </div>
+                    </div><br>
+                    {% endfor %} <!-- <button onclick="topFunction()" id="myBtn" title="Go to top">UP</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock ticketBody %}

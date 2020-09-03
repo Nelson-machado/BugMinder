@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} Tickets- home {% endblock title %}
+{% block ticketsactive %} active {% endblock ticketsactive %}
+{% block body %}
+<style>
+    .bg-dark2 {
+        background-color: #324c65 !important;
+    }
+</style>
+<div class="row">
+    <div class="col-2 container-fluid bg-dark2" style="height: 760px;position:relative;">
+        <nav class="navbar bg-dark2">
+            <ul class="nav navbar-nav bg-dark2" style="list-style-type: none; margin: 0; padding: 0; width: 300px;">
+                <li class="nav-item {% block ticketHomeActive %} {% endblock ticketHomeActive %}">
+                    <a class="nav-link" id="ticketsHome" href="/tickets"> Tickets Home </a>
+                </li>
+                <li class="nav-item {% block myticketsActive %} {% endblock myticketsActive %}">
+                    <a class="nav-link" id="mytickets" href="/tickets/myTickets"> My tickets </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> something1 </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> something2</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="col-10" style="background-color: #3128a71a;" >
+        {% block ticketBody %} {% endblock ticketBody %}
+    </div>
+</div>
+
+{% endblock body %}
+

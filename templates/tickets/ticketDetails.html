@@ -1,0 +1,411 @@
+{% extends 'ticketBase.html' %}
+{% block title %} Ticket no:&nbsp;{{ticket.tno}} {% endblock title %}
+{% block ticketBody %}
+<div id="div1" style="height: 760px;position:relative;">
+    <div id="div2" style="max-height:100%;overflow:auto; ">
+        <div id="div3" style="height:1500px;border:5px solid rgb(255 255 185);">
+            <div class="card shadow m-2">
+                <form>
+                    <div class="container-fluid m-2">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="inputEmail4"><strong>Ticket Number:</strong></label>
+                                <input type="text" class="form-control" id="tno" name="tno" value='{{ticket.tno}}'
+                                    readonly>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="author"><strong>Assinged To</strong></label>
+                                <input type="text" class="form-control" id="author" name="author"
+                                    value="{{ticket.author}}" readonly>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Status"><strong>Status</strong></label>
+                                <select class="form-control" name="Status" id="Status">
+                                    <option value="{{ticket.status}}" selected><b>{{ticket.status}}</b></option>
+                                </select>
+
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="timestamp"><strong>Created On</strong></label>
+                                <input type="text" class="form-control" id="timestamp" name="timestamp"
+                                    value="{{ticket.timestamp}}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="Title"><strong>Title</strong></label>
+                            <input type="text" class="form-control" id="Title" name="Title" value="{{ticket.title}}"
+                                readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="Description"><strong>Description</strong></label>
+                            <input type="text" class="form-control" id="Description" name="Description"
+                                value="{{ticket.content}}" readonly>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="enddate"><strong>End-date</strong></label>
+                            <input type="date" class="form-control" id="end_date" name="end_date"
+                                value="{{ticket.end_date|date:'Y-m-d'}}" readonly>
+                        </div>
+                        <a role="button" class="btn btn-primary" data-toggle="modal" data-target="#editTicketModal" title="Edit this ticket">Edit
+                            Details</a>
+                        <a role="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#deleteTicketModal" title="Delete this ticket">Delete
+                            ticket</a>
+                    </div>
+                </form>
+            </div>
+
+            <!--Files upload section-->
+            <div class="card shadow m-2">
+                <div class="container-fluid m-1">
+                    <h3 class="m-1">Attachments</h3>
+                    <form action="/tickets/ticketAttachments" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-row" style="background-color: #1e4e7d !important;">
+                            <div class="form-group col-md-6">
+                                {% comment %} <label for="attachment">Upload file(s):</label> {% endcomment %}<br>
+                                <input type="file" class="form-control-file"
+                                    style="background-color: #dfe6ec !important;" id="attachment" name="attachment"
+                                    required="" oninvalid="this.setCustomValidity('Sorry!! we cannot upload AIR')"
+                                    oninput="setCustomValidity('')">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="hidden" name="ticketTno" value="{{ticket.tno}}">
+                                <br>
+                                <input type="submit" class="btn btn-primary" value="Upload File">
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+
+                    <!--Attachment section with Delete option-->
+                    <div id="div1" style="position:relative;">
+                        <div class="row">
+                            {% if attachments|length < 1 %}
+                            <h5>No attachments as of now.</b></h5>
+                            {% else %}
+                            {% for attachment in attachments  %}
+                            <div class="column">
+                                <form action="/tickets/deleteAttachment" method="POST">
+                                    {% csrf_token %}
+                                    <div class="card m-2">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="sno" name="sno"
+                                                value="{{attachment.sno}}" hidden>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="attachment"><strong>Attachment Name:</strong></label>
+                                            <input type="text" class="form-control" id="attachment" name="attachment"
+                                                value="{{attachment.attachment}}" title="{{attachment.attachment}}"
+                                                readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="timestamp"><strong>Attached on: </strong></label>
+                                            <input type="text" class="form-control" id="timestamp" name="timestamp"
+                                                value="{{attachment.timestamp}}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="user"><strong>Attached by: </strong></label>
+                                            <input type="text" class="form-control" id="user" name="user"
+                                                value="{{attachment.user|title}}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <img id="my-img" src="{{attachment.attachment}}" role="button"
+                                                class="btn btn-primary" data-toggle="modal"
+                                                data-target="#viewAttachmentModal"
+                                                alt="{{ attachment.attachment|title }}"
+                                                title="{{ attachment.attachment|title }}" width="100px" height="80px" />
+                                        </div>
+                                        {% if user.username|title == attachment.user|title %}
+                                        <div class="form-group">
+                                            <input type="hidden" name="ticketTno" value="{{ticket.tno}}">
+                                            <input type="submit" class="btn btn-primary" value="Delete">
+                                        </div> {% endif %}
+                                    </div>
+                                </form>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Comment section-->
+            <div class="card shadow m-2">
+                <div class="container-fluid m-1">
+                    <h3>Comments</h3>
+                    <form action="/tickets/ticketComments" method="POST">
+                        {% csrf_token %}
+                        <textarea class="form-control" aria-label="With textarea" style="background-color: #f8eaea;"
+                            class="form-control" name="comment" cols="30" rows="6" required="" placeholder="Write something.."
+                            oninvalid="this.setCustomValidity('Comments cannot be an empty space:')"
+                            oninput="setCustomValidity('')"></textarea>
+                        <input type="hidden" name="ticketTno" value="{{ticket.tno}}"><br>
+                        <input type="submit" class="btn btn-primary" value="Comment" title="write a comment">
+                    </form>
+                    <br>
+                    {% if comments|length < 1 %}
+                    <h4>No comments as of now.</b></h4>
+                    {% else %}
+                    <!-- <div id="div1" style="height: 500px;position:relative;">
+                        <div id="div2" style="max-height:100%;overflow:auto; border:1px solid #b6a6a6;">
+                            <div id="div3" style="height:1500px;border:5px solid rgb(255 255 185);"> -->
+                    {% for comment in comments  %}
+                    <form action="/tickets/deleteComment" method="POST" id="deleteComment">
+                        {% csrf_token %}
+                        <div class="card shadow m-2" style="background-color: #8e9fe4;">
+                            <div class="card-header form-row">
+                                <strong style="color: #1b4772;">{{comment.user|title}} commented at
+                                    {{comment.timestamp}}.</strong>
+                            </div>
+                            <div class="card-body" style="background-color: #d4d4d4;">
+                                <p class="card-text" id="comment">{{ comment.comment|linebreaks }}</p>
+                            </div>
+
+                            {% if user.username|title == comment.user|title %}
+                            <div class="form-group">
+                                <input type="hidden" name="ticketTno" value="{{ticket.tno}}">
+                                <input type="hidden" name="srno" id="srno" value="{{comment.sno}}">
+                                <button type="submit" id="delete_comment_Btn" class="btn btn-default"
+                                    name="delete_comment"><span class="fas fa-trash  float-right"
+                                        title="delete comment"></span></button>
+                                <a href="#editCommentModal" data-toggle="modal" data-sno="{{comment.sno}}"
+                                    data-comment="{{comment.comment}}"><span class="fas fa-edit"
+                                        title="edit comment"></span></a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </form>
+                    {% endfor %}
+                    <!-- </div>
+                        </div>
+                    </div> -->
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- editTicketModal Modal -->
+<div class="modal fade" id="editTicketModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="editTicketModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTicketModaltitle">Edit the ticket {{ticket.tno}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: #1e4e7d !important; color: #ffffff;">
+                <div class="card shadow m-2" style="background-color: #393333;">
+                    <form action="/tickets/editTicket" method="POST" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="container-fluid m-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="tno" name="tno" value="{{ticket.tno}}"
+                                    hidden>
+                            </div>
+                            <div class="form-group">
+                                <label for="Title"><strong>Title</strong></label>
+                                <input type="text" class="form-control" id="title" name="title"
+                                    value="{{ticket.title}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="content"><strong>Description</strong></label>
+                                <input type="text" class="form-control" id="content" name="content"
+                                    value="{{ticket.content}}">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="author"><strong>Assinged To</strong></label>
+                                    <input type="text" class="form-control" id="author" name="author"
+                                        value="{{ticket.author}}" readonly>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="status"><strong>Status</strong></label>
+                                    <select class="form-control" name="status" id="status">
+                                        <option value="{{ticket.status}}"><b>{{ticket.status}}</b></option>
+                                        <option value="inProgress">In Progress</option>
+                                        <option value="onHold">On Hold</option>
+                                        <option value="resolved">Resolved</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="timestamp"><strong>Created On</strong></label>
+                                    <input type="text" class="form-control" id="timestamp" name="timestamp"
+                                        value="{{ticket.timestamp}}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="enddate"><strong>End-date</strong></label>
+                                <input type="date" class="form-control" id="end_date" name="end_date"
+                                    value="{{ticket.end_date|date:'Y-m-d'}}" required="false">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- viewAttachmentModal Modal -->
+<div class="modal fade" id="viewAttachmentModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="viewAttachmentModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewAttachmentModaltitle">Attachment viewer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: #1e4e7d !important; color: #ffffff;">
+                <img class="modal-content" id="img01">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- editCommentModal Modal -->
+<div class="modal fade" id="editCommentModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="editCommentModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCommentModaltitle">Edit the comment {{ticket.tno}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: #1e4e7d !important; color: #ffffff;">
+                <div class="card shadow m-2">
+                    <form action="/tickets/editComment" method="POST" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="container-fluid m-2">
+                            <div class="form-group">
+                                <input type="hidden" name="ticketTno" value="{{ticket.tno}}">
+                                <input type="hidden" id="scno" name="scno" />
+                                {% comment %} <input type="text" class="form-control" id="editUserId" name="editUserId"
+                                    value="{{user.username}}"> {% endcomment %}
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" aria-label="With textarea" class="form-control"
+                                    id="editCommentId" name="editCommentId" cols="30" rows="6"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- deleteTicketModal Modal -->
+<div class="modal fade" id="deleteTicketModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="deleteTicketModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTicketModaltitle">Edit the ticket {{ticket.tno}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: #1e4e7d !important; color: #ffffff;">
+                <div class="card shadow m-2" style="background-color: #393333;">
+                    <form action="/tickets/deleteTicket" method="POST" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="container-fluid m-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="tno" name="tno" value="{{ticket.tno}}"
+                                    hidden>
+                            </div>
+                            <h5>The Ticket {{ticket.tno}} will be deleted. Are you Sure?</h5>
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+    crossorigin="anonymous"></script>
+<script>
+    $('#editCommentModal').on('show.bs.modal', function (e) {
+        var scno = $(e.relatedTarget).data('sno');
+        var editCommentId = $(e.relatedTarget).data('comment');
+        //alert(editCommentId);
+        $(e.currentTarget).find('input[name="scno"]').val(scno);
+        $(e.currentTarget).find('textarea[name="editCommentId"]').val(editCommentId);
+    });
+</script>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+
+    /* Float four columns side by side */
+    .column {
+        float: left;
+        width: 30%;
+        padding: 0 10px;
+    }
+
+    /* Remove extra left and right margins, due to padding */
+    .row {
+        margin: 0 -5px;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    /* Responsive columns */
+    @media screen and (max-width: 600px) {
+        .column {
+            width: 100%;
+            display: block;
+            margin-bottom: 20px;
+        }
+    }
+
+    /* Style the counter cards */
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        background-color: #f1f1f1;
+    }
+</style>
+<script>
+    // Get the modal
+    var modal = document.getElementById("viewAttachmentModal");
+    var modalTitle = document.getElementById("viewAttachmentModaltitle")
+
+    var img = document.getElementById("my-img");
+    var modalImg = document.getElementById("img01");
+
+    img.onclick = function () {
+        modal.style.display = "block";
+        modalImg.src = this.src;
+        modalTitle.innerHTML = this.img;
+        captionText.innerHTML = this.alt;
+    }
+</script>
+{% endblock ticketBody %}
