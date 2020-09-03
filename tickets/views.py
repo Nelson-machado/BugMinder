@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
-
+from datetime import date, timedelta, timezone
+import datetime
 
 # Create your views here.
 @login_required
@@ -26,7 +27,10 @@ def myTickets(request):
     resolvedTicketCount = allTickets.filter(author__icontains=request.user, status__icontains='resolved').count()
     # print(selectedStatus)
     # print(allTickets)
-
+    # today1 =  datetime.datetime.now(tz=timezone.utc) + timedelta(1)
+    # print('todays date: ', today1.strftime("%m/%d/%Y, %H:%M:%S"))
+    # diviatedTicket = allTickets.filter(end_date__lte=today1)
+    # print(diviatedTicket)
     distinctStatus = Ticket.objects.values('status').distinct()
     distinctStatus = distinctStatus.filter(author__icontains=request.user)
 
@@ -45,6 +49,7 @@ def myTickets(request):
          'onHoldTicketCount': onHoldTicketCount,
          'resolvedTicketCount': resolvedTicketCount,
          'selectedStatus': selectedStatus
+        #  'diviatedTicket': diviatedTicket
     }
 
     return render(request, 'tickets/myTickets.html', context)
